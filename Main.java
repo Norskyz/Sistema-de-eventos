@@ -4,17 +4,10 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.*;
 
-/**
- * Sistema de Eventos (console)
- * - Persistência em events.data (serialização)
- * - Classes: Usuario, Evento, SistemaEventos
- *
- * Compile com: javac Main.java
- * Execute com: java Main
- */
+
 public class Main {
     private static final String DATA_FILE = "events.data";
-    private static final DateTimeFormatter DATE_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+    static final DateTimeFormatter DATE_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 
     public static void main(String[] args) {
         try {
@@ -254,11 +247,6 @@ public class Main {
     }
 }
 
-/* ===========================
-   Classes de domínio abaixo
-   (coloque no mesmo arquivo Main.java)
-   =========================== */
-
 class Usuario implements Serializable {
     private static final long serialVersionUID = 1L;
     private String nome;
@@ -394,11 +382,6 @@ class SistemaEventos implements Serializable {
         Collections.sort(eventos, Comparator.comparing(Evento::getDateTime));
     }
 
-    /** Determina status do evento:
-     * "Acontecendo agora" (se estiver dentro do intervalo [dateTime, dateTime + 2h))
-     * "Acontecerá futuramente" (if now < dateTime)
-     * "Já passou" (if now >= dateTime + 2h)
-     */
     public String getStatusEvento(Evento e) {
         LocalDateTime now = LocalDateTime.now();
         LocalDateTime start = e.getDateTime();
@@ -408,11 +391,9 @@ class SistemaEventos implements Serializable {
         return "Já passou";
     }
 
-    // Persistence
     public void saveToFile(String filename) {
         try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(filename))) {
             oos.writeObject(this);
-            //System.out.println("Dados salvos em " + filename);
         } catch (IOException ex) {
             System.out.println("Erro ao salvar dados: " + ex.getMessage());
         }
